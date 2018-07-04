@@ -156,3 +156,23 @@ class Level {
         }
 
     }
+}
+
+class LevelParser {
+    constructor(dictionary){
+        this.dictionary = dictionary;
+    }
+
+    actorFromSymbol(symbol){
+        if (symbol === undefined) {
+            return undefined;
+        }
+
+        if (Object.keys(this.dictionary).indexOf(symbol) !== -1){
+            return this.dictionary[symbol];
+        }
+        return undefined;
+    }
+
+
+}

@@ -7,8 +7,8 @@ class Vector {
     }
 
     plus(vector) {
-        if (!vector instanceof Vector) {
-            throw Error('Можно прибавлять к вектору только вектор типа Vector');
+        if (!(vector instanceof Vector)) {
+            throw new Error('Можно прибавлять к вектору только вектор типа Vector');
         }
         return new Vector(this.x + vector.x, this.y + vector.y);
     }
@@ -89,7 +89,7 @@ class Level {
     }
 
     isFinished() {
-        if (!(this.status === null && this.finishDelay < 0)) {
+        if ((this.status !== null) && (this.finishDelay < 0)) {
             return true;
         }
         return false;
@@ -140,19 +140,16 @@ class Level {
 
     playerTouched(type, movingObj) {
         if (this.status !== null) {
-            return;
-        }
-
-        if (['lava', 'fireball'].some((el) => el === type)) {
-            return this.status = 'lost';
-        }
-
-        if (type === 'coin' && movingObj.type === 'coin') {
-            this.removeActor(actor);
+            return false;
+        } else if ((type === "lava") || (type === "fireball")) {
+            this.status = "lost";
+            this.finishDelay = 1;
+        } else if (type === "coin") {
+            this.actors = this.actors.filter(obj => obj !== movingObj);
             if (this.noMoreActors('coin')) {
-                return this.status = 'won';
+                this.status = "won";
+                this.finishDelay = 1;
             }
-
         }
 
     }
@@ -214,7 +211,7 @@ class LevelParser {
     }
 
     parse(arrayString){
-        return Level (this.createGrid(arrayString), this.createActors(arrayString))
+        return new Level (this.createGrid(arrayString), this.createActors(arrayString));
     }
 
 }
